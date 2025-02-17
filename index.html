@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot</title>
+    <title>Job Connection Platform AI Job Coach</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #chat { max-width: 400px; margin: auto; padding: 10px; border: 1px solid #ccc; }
-        #messages { height: 300px; overflow-y: scroll; border-bottom: 1px solid #ccc; padding: 5px; text-align: left; }
-        input { width: 80%; padding: 5px; }
-        button { padding: 5px; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        #chat { max-width: 400px; margin: auto; padding: 10px; border: 2px solid #007bff; background: white; border-radius: 8px; }
+        #messages { height: 300px; overflow-y: auto; border-bottom: 1px solid #ccc; padding: 10px; text-align: left; background: #fff; }
+        input { width: 75%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 12px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #0056b3; }
     </style>
 </head>
 <body>
-    <h2>Simple AI Chatbot</h2>
+    <h2>Job Connection Platform AI Job Coach</h2>
     <div id="chat">
         <div id="messages"></div>
         <input type="text" id="userInput" placeholder="Type a message...">
@@ -23,17 +24,20 @@
     <script>
         async function sendMessage() {
             let userInput = document.getElementById("userInput").value;
-            document.getElementById("messages").innerHTML += "<p><b>You:</b> " + userInput + "</p>";
+            if (!userInput.trim()) return;
+            
+            document.getElementById("messages").innerHTML += `<p><b>You:</b> ${userInput}</p>`;
             document.getElementById("userInput").value = "";
 
-            let response = await fetch("https://agate-aeolian-ski.glitch.me/chat", {  // Your Glitch backend URL
+            let response = await fetch("https://agate-aeolian-ski.glitch.me/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userInput })
             });
 
             let data = await response.json();
-            document.getElementById("messages").innerHTML += "<p><b>AI:</b> " + data.reply + "</p>";
+            document.getElementById("messages").innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
+            document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
         }
     </script>
 </body>
