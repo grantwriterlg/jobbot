@@ -1,20 +1,53 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Connection Platform (Virtual Job Coach)</title>
+    <title>AI Job Coach Chatbot</title> <!-- Page title remains for browser tab -->
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
-        #chat { max-width: 400px; margin: auto; padding: 10px; border: 2px solid #002855; background: white; border-radius: 8px; }
-        #messages { height: 300px; overflow-y: auto; border-bottom: 1px solid #ccc; padding: 10px; text-align: left; background: #fff; }
-        input { width: 75%; padding: 8px; border: 1px solid #002855; border-radius: 4px; }
-        button { padding: 8px 12px; background: #ffb300; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #f4f4f4; 
+        }
+        #chat { 
+            max-width: 400px; 
+            margin: auto; 
+            padding: 15px; 
+            border: 2px solid #002855; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #messages { 
+            height: 320px; 
+            overflow-y: auto; 
+            border-bottom: 1px solid #ccc; 
+            padding: 10px; 
+            text-align: left; 
+            background: #fff; 
+        }
+        input { 
+            width: 75%; 
+            padding: 10px; 
+            border: 1px solid #002855; 
+            border-radius: 4px; 
+        }
+        button { 
+            padding: 10px 14px; 
+            background: #ffb300; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-weight: bold;
+        }
         button:hover { background: #cc8c00; }
     </style>
 </head>
 <body>
-    <h2 style="color: #002855;">Job Connection Platform <span style="color: #ffb300;">(Virtual Job Coach)</span></h2>
     <div id="chat">
         <div id="messages"></div>
         <input type="text" id="userInput" placeholder="Type a message...">
