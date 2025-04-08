@@ -1,314 +1,77 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Career Coach</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background: #f4f6f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header {
-      width: 100%;
-      padding: 20px;
-      background: #002855;
-      color: white;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-    }
-
-    #container {
-      display: flex;
-      flex-direction: row;
-      max-width: 1000px;
-      width: 100%;
-      margin: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
-
-    #controls {
-      width: 35%;
-      background: #003366;
-      color: white;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    #controls label {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    #controls select,
-    #controls input[type="text"],
-    #controls button {
-      font-size: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-    }
-
-    #controls input,
-    #controls select {
-      color: black;
-    }
-
-    #controls button {
-      font-weight: 600;
-      cursor: pointer;
-      color: white;
-    }
-
-    #sendBtn { background: #ffb300; }
-    #clearBtn { background: #ff7043; }
-    #voiceBtn { background: #4caf50; }
-    #stopBtn { background: #d32f2f; }
-    #pauseBtn { background: #1976d2; }
-
-    #voiceBtn.recording {
-      background-color: #b71c1c !important;
-    }
-
-    #chatArea {
-      width: 65%;
-      padding: 20px;
-      height: 500px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #f9f9f9;
-    }
-
-    .message {
-      padding: 14px 18px;
-      border-radius: 12px;
-      font-size: 15px;
-      line-height: 1.5;
-      max-width: 80%;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.08);
-    }
-
-    .user {
-      align-self: flex-start;
-      background-color: #e3f2fd;
-      color: #0d47a1;
-    }
-
-    .ai {
-      align-self: flex-end;
-      background-color: #eeeeee;
-      color: #333;
-    }
-
-    @media screen and (max-width: 768px) {
-      #container {
-        flex-direction: column;
-      }
-      #controls, #chatArea {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Coach Chatbot</title> <!-- Page title remains for browser tab -->
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #f4f4f4; 
+        }
+        #chat { 
+            max-width: 400px; 
+            margin: auto; 
+            padding: 15px; 
+            border: 2px solid #002855; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #messages { 
+            height: 320px; 
+            overflow-y: auto; 
+            border-bottom: 1px solid #ccc; 
+            padding: 10px; 
+            text-align: left; 
+            background: #fff; 
+        }
+        input { 
+            width: 75%; 
+            padding: 10px; 
+            border: 1px solid #002855; 
+            border-radius: 4px; 
+        }
+        button { 
+            padding: 10px 14px; 
+            background: #ffb300; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-weight: bold;
+        }
+        button:hover { background: #cc8c00; }
+    </style>
 </head>
 <body>
-  <header>AI Career Coach</header>
-
-  <div id="container">
-    <div id="controls">
-      <label for="inputLang">🗣️ Speak/Type Language:</label>
-      <select id="inputLang">
-        <option value="english">English</option>
-        <option value="spanish">Español</option>
-      </select>
-
-      <label for="responseLang">🔈 Response Language:</label>
-      <select id="responseLang">
-        <option value="english">English</option>
-        <option value="spanish">Español</option>
-      </select>
-
-      <input type="text" id="userInput" placeholder="Ask a career question..." />
-      <button id="sendBtn" onclick="sendMessage()">📨 Send</button>
-      <button id="clearBtn" onclick="clearChat()">🧹 Clear Chat</button>
-      <button id="voiceBtn">🎙️ Hold to Speak</button>
-      <button id="stopBtn" onclick="stopSpeaking()">🛑 Stop</button>
-      <button id="pauseBtn" onclick="togglePause()">⏸️ Pause / ▶️ Resume</button>
+    <div id="chat">
+        <div id="messages"></div>
+        <input type="text" id="userInput" placeholder="Ask any career question...">
+        <button onclick="sendMessage()">Send</button>
     </div>
 
-    <div id="chatArea"></div>
-  </div>
+    <script>
+        async function sendMessage() {
+            let userInput = document.getElementById("userInput").value;
+            if (!userInput.trim()) return;
+            
+            document.getElementById("messages").innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+            document.getElementById("userInput").value = "";
 
-  <script>
-    const messages = document.getElementById("chatArea");
-    const voiceBtn = document.getElementById("voiceBtn");
-    let recognition;
-    let isPausedManually = false;
-    let lastInputWasVoice = false;
+            let response = await fetch("https://agate-aeolian-ski.glitch.me/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            });
 
-    const langMap = {
-      english: { code: "en-US", name: "English" },
-      spanish: { code: "es-ES", name: "Spanish" }
-    };
-
-    let chatHistory = [];
-
-    function getLang(id) {
-      return langMap[document.getElementById(id).value];
-    }
-
-    function getSystemPrompt() {
-      return `You are a professional and supportive career coach. Answer clearly, encourage job seekers, and give actionable advice in ${getLang("responseLang").name}.`;
-    }
-
-    function resetChatHistory() {
-      chatHistory = [{ role: "system", content: getSystemPrompt() }];
-    }
-
-    resetChatHistory();
-
-    function addMessage(text, role) {
-      const msg = document.createElement("div");
-      msg.className = "message " + role;
-      msg.textContent = text;
-      messages.appendChild(msg);
-      messages.scrollTop = messages.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById("userInput").value.trim();
-      if (!input) return;
-
-      addMessage(input, "user");
-      chatHistory.push({ role: "user", content: input });
-      document.getElementById("userInput").value = "";
-
-      try {
-        const response = await fetch("https://sweet-jumpy-broker.glitch.me/homework", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: chatHistory })
-        });
-
-        const data = await response.json();
-        const reply = data.reply;
-
-        addMessage(reply, "ai");
-        if (lastInputWasVoice) speak(reply);
-        chatHistory.push({ role: "assistant", content: reply });
-        lastInputWasVoice = false;
-      } catch (err) {
-        console.error("Error:", err);
-        addMessage("Something went wrong. Please try again.", "ai");
-      }
-    }
-
-    function clearChat() {
-      messages.innerHTML = "";
-      resetChatHistory();
-    }
-
-    function updatePromptOnly() {
-      if (chatHistory.length > 0 && chatHistory[0].role === "system") {
-        chatHistory[0].content = getSystemPrompt();
-      }
-    }
-
-    document.getElementById("inputLang").addEventListener("change", updatePromptOnly);
-    document.getElementById("responseLang").addEventListener("change", updatePromptOnly);
-
-    voiceBtn.addEventListener("mousedown", startListening);
-    voiceBtn.addEventListener("mouseup", stopListening);
-    voiceBtn.addEventListener("touchstart", startListening);
-    voiceBtn.addEventListener("touchend", stopListening);
-
-    function startListening() {
-      lastInputWasVoice = true;
-      const inputLang = getLang("inputLang");
-      recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = inputLang.code;
-      recognition.interimResults = false;
-
-      recognition.onresult = function (event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById("userInput").value = transcript;
-        sendMessage();
-      };
-
-      recognition.onerror = function (event) {
-        console.error("Voice error:", event.error);
-        addMessage("Voice error: " + event.error, "ai");
-      };
-
-      voiceBtn.classList.add("recording");
-      recognition.start();
-    }
-
-    function stopListening() {
-      if (recognition) {
-        recognition.stop();
-        voiceBtn.classList.remove("recording");
-      }
-    }
-
-    function speak(text) {
-      const resLang = getLang("responseLang");
-      const synth = window.speechSynthesis;
-
-      function speakNow() {
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = resLang.code;
-
-        let voice = synth.getVoices().find(v => v.lang === resLang.code);
-        if (!voice) {
-          voice = synth.getVoices().find(v => v.lang.startsWith(resLang.code.split("-")[0]));
+            let data = await response.json();
+            document.getElementById("messages").innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
+            document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
         }
-
-        if (voice) utter.voice = voice;
-        else console.warn("No voice found for", resLang.code);
-
-        synth.cancel();
-        isPausedManually = false;
-        synth.speak(utter);
-      }
-
-      if (synth.getVoices().length === 0) {
-        synth.onvoiceschanged = () => speakNow();
-      } else {
-        speakNow();
-      }
-    }
-
-    function stopSpeaking() {
-      window.speechSynthesis.cancel();
-      isPausedManually = false;
-    }
-
-    function togglePause() {
-      const synth = window.speechSynthesis;
-      if (synth.speaking) {
-        if (synth.paused) {
-          synth.resume();
-          isPausedManually = false;
-        } else {
-          synth.pause();
-          isPausedManually = true;
-        }
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
