@@ -1,77 +1,139 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Job Coach Chatbot</title> <!-- Page title remains for browser tab -->
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            background-color: #f4f4f4; 
-        }
-        #chat { 
-            max-width: 400px; 
-            margin: auto; 
-            padding: 15px; 
-            border: 2px solid #002855; 
-            background: white; 
-            border-radius: 8px; 
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        #messages { 
-            height: 320px; 
-            overflow-y: auto; 
-            border-bottom: 1px solid #ccc; 
-            padding: 10px; 
-            text-align: left; 
-            background: #fff; 
-        }
-        input { 
-            width: 75%; 
-            padding: 10px; 
-            border: 1px solid #002855; 
-            border-radius: 4px; 
-        }
-        button { 
-            padding: 10px 14px; 
-            background: #ffb300; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            font-weight: bold;
-        }
-        button:hover { background: #cc8c00; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Job Coach Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #chat {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #002855;
+      padding: 15px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #messages {
+      height: 320px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #fff;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      max-width: 80%;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
+    .user {
+      background: #e3f2fd;
+      align-self: flex-start;
+      border-top-left-radius: 0;
+    }
+
+    .ai {
+      background: #f1f1f1;
+      align-self: flex-end;
+      border-top-right-radius: 0;
+    }
+
+    #inputArea {
+      margin-top: 10px;
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #002855;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 14px;
+      background: #ffb300;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #cc8c00;
+    }
+  </style>
 </head>
 <body>
-    <div id="chat">
-        <div id="messages"></div>
-        <input type="text" id="userInput" placeholder="Ask any career question...">
-        <button onclick="sendMessage()">Send</button>
+  <div id="chat">
+    <div id="messages"></div>
+    <div id="inputArea">
+      <input type="text" id="userInput" placeholder="Ask any career question..." />
+      <button onclick="sendMessage()">Send</button>
     </div>
+  </div>
 
-    <script>
-        async function sendMessage() {
-            let userInput = document.getElementById("userInput").value;
-            if (!userInput.trim()) return;
-            
-            document.getElementById("messages").innerHTML += `<p><b>You:</b> ${userInput}</p>`;
-            document.getElementById("userInput").value = "";
+  <script>
+    const messagesDiv = document.getElementById("messages");
+    const chatHistory = [
+      {
+        role: "system",
+        content: "You are a professional AI career coach. Give helpful and encouraging answers to job seekers."
+      }
+    ];
 
-            let response = await fetch("https://agate-aeolian-ski.glitch.me/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userInput })
-            });
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const userText = input.value.trim();
+      if (!userText) return;
 
-            let data = await response.json();
-            document.getElementById("messages").innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
-            document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
-        }
-    </script>
+      appendBubble(userText, "user");
+      chatHistory.push({ role: "user", content: userText });
+      input.value = "";
+
+      try {
+        const res = await fetch("https://agate-aeolian-ski.glitch.me/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: chatHistory })
+        });
+
+        const data = await res.json();
+        const aiReply = data.reply;
+        appendBubble(aiReply, "ai");
+        chatHistory.push({ role: "assistant", content: aiReply });
+      } catch (err) {
+        appendBubble("Oops! Something went wrong. Please try again.", "ai");
+      }
+    }
+
+    function appendBubble(text, role) {
+      const bubble = document.createElement("div");
+      bubble.className = "bubble " + role;
+      bubble.textContent = text;
+      messagesDiv.appendChild(bubble);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+  </script>
 </body>
 </html>
